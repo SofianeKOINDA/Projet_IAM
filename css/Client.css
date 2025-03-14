@@ -1,0 +1,186 @@
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-padding: 2rem;
+  scroll-behavior: smooth;
+  list-style: none;
+  text-decoration: none;
+  font-family: "poppins",sans-serif;
+}
+
+:root{
+    --primary-color: #fe5b3d;
+    --secondary-color: #fFAC38;
+    --text-color: #444;
+    --gradient-color: linear-gradient(#fe5b3d, #fFAC38);
+}
+html{
+    font-size: 15px;
+}
+body{
+    background: #EEEFF1;
+}
+
+header{
+    
+        width: 100%;
+        top: 0;
+        right: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #ffffff;
+        padding: 15px 100px;
+    
+}
+
+.logo img{
+    width: 40px;
+    left: -80px;
+    position: relative;
+    top: 5px;
+}
+.logo-text{
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-left: -350px;
+   
+}
+.navbar{
+    display: flex;
+    align-items: center;
+}
+.navbar li{
+    position: relative;
+}
+.navbar a{
+    font-size: 1rem;
+    padding: 10px 20px;
+    color: var(--text-color);
+    font-weight: 500px;
+}
+.navbar a::after {
+    content: "";
+    width: 0;
+    height: 3px;
+    background: var(--gradient-color);
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    transition: 0.5s;
+}
+.navbar a:hover::after{
+    width: 100%;
+}
+.header-btn{
+    margin-right: -20px;
+}
+.Accueil{
+    display: flex;
+}
+.Accueil-image img{
+    width: 80%;
+    height: 100;
+    position: relative;
+    margin-top: 80px;
+}
+.Accueil-container{
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ margin-top: 20px;
+ margin-right: 100px;
+}
+.Accueil-container h1{
+    font-size: 2rem;
+    margin-left: 100px;
+}
+.Accueil-container span{
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-top: 50px;
+}
+.formulaire-container{
+    background: var(--gradient-color);
+    padding: 50px 100px;
+    border-radius: 10px;
+    height: 450px;
+    margin-right: 20px;
+}
+.formulaire-container P{
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 40px;
+}
+.formulaire-container input[type="email"],
+.formulaire-container input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; 
+}
+
+.formulaire-container button {
+  background-color: #474fa0;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.5s;
+  width: 100%;
+  margin-top: 20px;
+}
+.formulaire-container button:hover {
+  background-color: var(--primary-color); 
+}
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin-left: 1000px; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+    height: 100%; 
+}
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.deco{
+    margin-bottom: -3px;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

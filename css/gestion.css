@@ -1,0 +1,168 @@
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-padding: 2rem;
+  scroll-behavior: smooth;
+  list-style: none;
+  text-decoration: none;
+  font-family: "poppins",sans-serif;
+}
+
+.form-box {
+    background: #ffffff; /* White background for the box */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    padding: 20px; /* Padding inside the box */
+    margin: 20px 0; /* Margin around the box */
+    width: 100%; /* Full width */
+}
+
+
+:root{
+    --primary-color: #fe5b3d;
+    --secondary-color: #fFAC38;
+    --text-color: #444;
+    --gradient-color: linear-gradient(#fe5b3d, #fFAC38);
+}
+
+body{
+    background: #E9EEF8;
+}
+
+header{
+    
+        width: 100%;
+        top: 0;
+        right: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #ffffff;
+        padding: 15px 100px;
+    
+}
+.navbar{
+    display: flex;
+    align-items: center;
+}
+.navbar li{
+    position: relative;
+}
+.navbar a{
+    font-size: 1rem;
+    padding: 10px 20px;
+    color: var(--text-color);
+    font-weight: 500px;
+}
+.navbar a::after{
+    content: "";
+    width: 0;
+    height: 3px;
+    background: var(--gradient-color);
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    transition: 0.5s;
+}
+.navbar a:hover::after{
+    width: 100%;
+}
+
+.logo img{
+    width: 40px;
+    left: -80px;
+    position: relative;
+    top: 1px;
+}
+.logo-text{
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-left: -25%;
+   
+}
+/* Centrer la table */
+.liste-content-2 {
+    display: flex;
+    justify-content: center;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 80%; 
+}
+
+
+th, td {
+    text-align: center;
+    padding: 8px;
+}
+
+/* ici on va disposer les deux actions accept et decline sur la même ligne */
+form {
+    display: inline; 
+    margin: 0 5px; 
+    width: 25px; 
+}
+
+/* on a centré le titre */
+.liste-titre-2 {
+    text-align: center;
+}
+
+/* on a mis les deux actions dans un box  */
+.form-box {
+    background-color: #ffffff; 
+    padding: 10px; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    margin: 20px; 
+}
+
+/* ici on va styliser le modal de profiladmin*/
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin-left: 1000px; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+    height: 100%; 
+}
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.deco{
+    margin-bottom: -3px;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

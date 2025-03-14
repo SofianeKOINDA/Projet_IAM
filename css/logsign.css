@@ -1,0 +1,122 @@
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-padding: 2rem;
+  scroll-behavior: smooth;
+  list-style: none;
+  text-decoration: none;
+  font-family: "poppins",sans-serif;
+}
+
+:root{
+    --primary-color: #fe5b3d;
+    --secondary-color: #fFAC38;
+    --text-color: #444;
+    --gradient-color: linear-gradient(#fe5b3d, #fFAC38);
+}
+
+body{
+    background: #E9EEF8;
+}
+header{
+    
+    width: 100%;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    background: #ffffff;
+    padding: 7px 100px;
+
+}
+.logo img{
+width: 40px;
+left: -60px;
+position: relative;
+}
+.logo-text{
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-left: -40px;
+   
+}
+
+.Accueil {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    background: url('../img/voiture3.png'); 
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: cover;
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(2, 1fr);
+}
+.text h1 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    margin-left: 30px;
+}
+.text span {
+    color: var(--primary-color);
+}
+
+  .formulaire-connexion {
+    width: 300px;
+    padding: 20px;
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    margin-left: 200px;
+  }
+  .formulaire-connexion label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+
+  .formulaire-connexion input[type="email"],
+  .formulaire-connexion input[type="password"],
+  .formulaire-connexion input[type="date"],
+  .formulaire-connexion input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; 
+  }
+  
+  .formulaire-connexion button[type="submit"] {
+    background-color: #474fa0;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+  }
+  .formulaire-connexion button[type="submit"]:hover {
+    background-color: var(--primary-color); 
+  }
+  
+ 
+  .formulaire-connexion .lien-inscription {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .formulaire-connexion .lien-inscription a {
+    color: #007bff; 
+    text-decoration: none; 
+  } 
