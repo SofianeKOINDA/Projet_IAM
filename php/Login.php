@@ -1,7 +1,6 @@
 <?php
-
 session_start();
-require_once("connexion.php");
+require_once '../action/connexion.php';
 
 $error = "";
 

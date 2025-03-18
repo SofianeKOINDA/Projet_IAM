@@ -1,69 +1,64 @@
 @import url(https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap);
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scroll-padding: 2rem;
-  scroll-behavior: smooth;
-  list-style: none;
-  text-decoration: none;
-  font-family: "poppins",sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-padding: 2rem;
+    scroll-behavior: smooth;
+    list-style: none;
+    text-decoration: none;
+    font-family: "poppins", sans-serif;
 }
 
-:root{
+:root {
     --primary-color: #fe5b3d;
     --secondary-color: #fFAC38;
     --text-color: #444;
     --gradient-color: linear-gradient(#fe5b3d, #fFAC38);
 }
-html{
-    font-size: 15px;
-}
-body{
-    background: #EEEFF1;
+
+body {
+    background: #E9EEF8;
 }
 
-header{
-    
-        width: 100%;
-        top: 0;
-        right: 0;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #ffffff;
-        padding: 15px 100px;
-    
+header {
+    width: 100%;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    padding: 7px 100px;
 }
 
-.logo img{
+.logo img {
     width: 40px;
-    left: -80px;
-    position: relative;
-    top: 5px;
+    margin-left: -70px;
 }
-.logo-text{
+
+.logo-text {
     font-size: 1.9rem;
     font-weight: 700;
     color: var(--primary-color);
-    margin-left: -350px;
-   
+    margin-left: -300px;
 }
-.navbar{
+
+.navbar {
     display: flex;
-    align-items: center;
 }
-.navbar li{
-    position: relative;
+
+.navbar li {
+    margin: 0 15px;
 }
-.navbar a{
-    font-size: 1rem;
-    padding: 10px 20px;
+
+.navbar a {
     color: var(--text-color);
-    font-weight: 500px;
+    font-weight: 500;
 }
+
 .navbar a::after {
     content: "";
     width: 0;
@@ -77,110 +72,143 @@ header{
 .navbar a:hover::after{
     width: 100%;
 }
-.header-btn{
-    margin-right: -20px;
-}
-.Accueil{
+
+.header-btn {
     display: flex;
-}
-.Accueil-image img{
-    width: 80%;
-    height: 100;
-    position: relative;
-    margin-top: 80px;
-}
-.Accueil-container{
- display: flex;
- flex-direction: column;
- justify-content: center;
- margin-top: 20px;
- margin-right: 100px;
-}
-.Accueil-container h1{
-    font-size: 2rem;
-    margin-left: 100px;
-}
-.Accueil-container span{
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-top: 50px;
-}
-.formulaire-container{
-    background: var(--gradient-color);
-    padding: 50px 100px;
-    border-radius: 10px;
-    height: 450px;
-    margin-right: 20px;
-}
-.formulaire-container P{
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 40px;
-}
-.formulaire-container input[type="email"],
-.formulaire-container input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box; 
+    align-items: center;
 }
 
-.formulaire-container button {
-  background-color: #474fa0;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.5s;
-  width: 100%;
-  margin-top: 20px;
+.header-btn .Profil img {
+    width: 30px;
+    margin-right: 5px;
 }
-.formulaire-container button:hover {
-  background-color: var(--primary-color); 
+
+.Accueil {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 50px 100px;
 }
+
+.Accueil-image img {
+    max-width: 500px;
+}
+
+.Accueil-container {
+    text-align: left;
+}
+
+.Accueil-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.Accueil-container span {
+    color: var(--primary-color);
+}
+
+.formulaire-container {
+    background: linear-gradient(135deg, #ff8c00, #ff4500);
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+}
+
+.formulaire-container p {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.formulaire-container input[type="text"],
+.formulaire-container input[type="email"],
+.formulaire-container input[type="commentaire"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+}
+
+.formulaire-container button[type="submit"] {
+    background-color: #474fa0;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Style pour le modal */
 .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgb(0,0,0); 
-    background-color: rgba(0,0,0,0.4); 
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin-left: 1000px; 
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
     padding: 20px;
-    border: 1px solid #888;
-    width: 20%;
-    height: 100%; 
+    border-radius: 8px 0 0 8px;
+    width: 30%;
+    max-width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-.deco{
-    margin-bottom: -3px;
-}
+
 .close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #000;
     text-decoration: none;
-    cursor: pointer;
+}
+
+.modal-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.modal-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.modal-td {
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-table a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.modal-table a:hover {
+    text-decoration: underline;
+}
+
+.modal-table hr {
+    border: 0;
+    border-top: 1px solid #ccc;
 }

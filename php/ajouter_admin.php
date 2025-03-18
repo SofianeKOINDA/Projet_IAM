@@ -1,15 +1,40 @@
 <?php
 session_start();
 require_once '../action/connexion.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nom = $_POST['nom'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $role = isset($_POST['role']) ? 'super_admin' : 'admin';
+
+    try {
+        $query = "INSERT INTO administrateurs (nom_utilisateur, email, mot_de_passe, role) 
+                  VALUES (:nom, :email, :mot_de_passe, :role)";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([
+            ':nom' => $nom,
+            ':email' => $email,
+            ':mot_de_passe' => $password,
+            ':role' => $role
+        ]);
+
+        $success = "Administrateur ajouté avec succès!";
+    } catch (PDOException $e) {
+        $error = "Erreur: " . $e->getMessage();
+    }
+}
 ?>
+
+
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Reservation</title>
-    <link rel="stylesheet" type="text/css" href="../css/gestion.css">
+    <meta charset="UTF-8">
+    <title>Ajouter un administrateur</title>
+    <link rel="stylesheet" href="../css/ajouter.css">
     <style>
-   /* Style pour le modal */
-.modal {
+        .modal {
     display: none; /* Masqué par défaut */
     position: fixed;
     z-index: 1000;
@@ -82,27 +107,26 @@ require_once '../action/connexion.php';
     border: 0;
     border-top: 1px solid #ccc;
 }
-
-</style>
+    </style>
 </head>
 <body>
-<header>
+    <header>
         <a href="#" class="logo"><img src="../img/jeep.png" alt="Logo"></a>
         <span class="logo-text">Hallo Car</span>
         <ul class="navbar">
             <li><a href="../php/admin_compte.php">Accueil</li>
-            <li><a href="../php/gestion_reservation.php">Réservation</a></li>
+            <li><a href="../php/gestion_client.php">Client</a></li>
             <li><a href="../php/ajouter_voiture.php">Voiture</a></li>
         </ul>
         <div class="header-btn">
-        <a href="#" class="Profil" id="profile-link"><img src="../img/user-regular-240.png" alt="" width="25px" ></a>
-
-        <div id="profile-modal" class="modal">
-            <div class="modal-content">
-                <span id="close-modal" class="close">&times;</span>
-                <h2>Profil</h2>
-                <table class="modal-table">
-                <?php
+            <a href="#" class="Profil" id="profile-link"><img src="../img/user-regular-240.png" alt="" width="25px"></a>
+            
+            <div id="profile-modal" class="modal">
+                <div class="modal-content">
+                    <span id="close-modal" class="close">&times;</span>
+                    <h2>Profil</h2>
+                    <table class="modal-table">
+                    <?php
    try {
     if (!isset($pdo)) {
         throw new Exception("Erreur : La connexion PDO n'a pas été établie.");
@@ -133,86 +157,51 @@ require_once '../action/connexion.php';
         echo "<tr><td colspan='2'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
     }
     ?>
-</table>
-           </div>
+                    </table>
+                </div>
+            </div>
         </div>
+    </header>
 
-        <script>
-            const profileLink = document.getElementById('profile-link');
-            const modal = document.getElementById('profile-modal');
-            const closeModal = document.getElementById('close-modal');
+    <section class="container">
+        <h2>Ajouter un <span>administrateur</span></h2>
+        <?php if(isset($success)) echo "<p class='success'>$success</p>"; ?>
+        <?php if(isset($error)) echo "<p class='error'>$error</p>"; ?>
+        
+        <div class="form-box">
+            <form method="POST">
+                <input type="text" name="nom" placeholder="Nom_utilisateur" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Mot de passe" required>
+                <div style="margin: 10px 0;">
+                    <label>
+                        <input type="checkbox" name="role">
+                        Super Admin
+                    </label>
+                </div>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </section>
 
-            profileLink.onclick = function() {
-                modal.style.display = "block";
-            }
+    <script>
+        const profileLink = document.getElementById('profile-link');
+        const modal = document.getElementById('profile-modal');
+        const closeModal = document.getElementById('close-modal');
 
-            closeModal.onclick = function() {
+        profileLink.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
                 modal.style.display = "none";
             }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-        </script>
-
-        </div>
-</header>
-    
-      <div class="liste-section-2">
-        <h2 class="liste-titre-2">Liste des clients </h2>
-          <div class="liste-content-2">
-            <div class="form-box">
-             
-              <table border="1" style="width: 100%;">
-                <tr class="table-header" style="background: #fe5b3d; color: white;">
-                  <th>Id_Client</th>
-                  <th>nom</th>
-                  <th>prenom</th>
-                  <th>E-mail</th>
-                  <th>numero_permis</th>
-                  <th>date_naissance</th>
-                  <th>Gestion</th>
-                </tr>
-                
-                <?php
-
-try {
-    
-    if (!isset($pdo)) {
-        throw new Exception("Erreur : La connexion PDO n'a pas été établie.");
-    }
-
-    // Exécuter la requête SQL
-    $sql = "SELECT id_client, nom, prenom, email, numero_permis, date_naissance FROM clients";
-    $marequete = $pdo->query($sql);
-
-    if ($marequete->rowCount() > 0) {
-        while ($resultat = $marequete->fetch(PDO::FETCH_ASSOC)) {
-            echo "<tr>
-                    <td>" . htmlspecialchars($resultat["id_client"]) . "</td>
-                    <td>" . htmlspecialchars($resultat["nom"]) . "</td>
-                    <td>" . htmlspecialchars($resultat["prenom"]) . "</td>
-                    <td>" . htmlspecialchars($resultat["email"]) . "</td>
-                    <td>" . htmlspecialchars($resultat["numero_permis"]) . "</td>
-                    <td>" . htmlspecialchars($resultat["date_naissance"]) . "</td>
-                    <td>
-                      <div class='form-box'>
-                        <form method='post' action='decline_reservation.php'>
-                          <input type='hidden' name='id_client' value='" . htmlspecialchars($resultat["id_client"]) . "'>
-                          <input type='image' src='../img/x-regular-240.png' alt='Refuser' width='25'>
-                        </form>
-                      </div>
-                    </td>
-                </tr>";
         }
-    } else {
-        echo "<tr><td colspan='7'>Aucun client trouvé.</td></tr>";
-    }
-} catch (Exception $e) {
-    echo "<tr><td colspan='7'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
-}
-?>
+    </script>
 </body>
 </html>

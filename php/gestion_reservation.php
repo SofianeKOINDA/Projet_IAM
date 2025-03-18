@@ -1,18 +1,96 @@
 <?php
-require_once("connexion.php");
+session_start();
+require_once '../action/connexion.php';
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Reservation</title>
     <link rel="stylesheet" type="text/css" href="../css/gestion.css">
+    <style>
+   /* Style pour le modal */
+.modal {
+    display: none; /* Masqué par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; /* Prend toute la hauteur de la page */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+}
+
+/* Contenu du modal (aligné à droite et pleine hauteur) */
+.modal-content {
+    background-color: #fefefe;
+    position: absolute; /* Position fixe pour ancrer à droite */
+    right: 0; /* Aligner à droite */
+    top: 0;
+    height: 100%; /* Prend toute la hauteur */
+    padding: 20px;
+    border-radius: 8px 0 0 8px; /* Bord arrondi à gauche pour un effet esthétique */
+    width: 30%; /* Ajustez la largeur si nécessaire */
+    max-width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Contenu aligné à gauche dans le modal */
+}
+
+/* Bouton de fermeture */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* Table dans le modal */
+.modal-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.modal-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.modal-td {
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-table a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.modal-table a:hover {
+    text-decoration: underline;
+}
+
+/* Ligne de séparation */
+.modal-table hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+</style>
 </head>
 <body>
 <header>
         <a href="#" class="logo"><img src="../img/jeep.png" alt="Logo"></a>
         <span class="logo-text">Hallo Car</span>
         <ul class="navbar">
-            <li><a href="../php/gestion_reservation.php">Réservation</li>
+            <li><a href="../php/admin_compte.php">Accueil</li>
             <li><a href="../php/gestion_client.php">Client</a></li>
             <li><a href="../php/ajouter_voiture.php">Voiture</a></li>
         </ul>
@@ -23,58 +101,40 @@ require_once("connexion.php");
             <div class="modal-content">
                 <span id="close-modal" class="close">&times;</span>
                 <h2>Profil</h2>
-                <table>
-    <tr>
-        <td>ID_Admin</td>
-    </tr>
-    <tr>
-        <td>Nom d'utilisateur</td>
-    </tr>
-    <tr>
-        <td>Email</td>
-    </tr>
-    <tr>
-        <td>Super_Admin</td>
-    </tr>
-<?php
-try {
-    // Vérifier que la connexion PDO est bien initialisée
+                <table class="modal-table">
+      <?php
+   try {
     if (!isset($pdo)) {
         throw new Exception("Erreur : La connexion PDO n'a pas été établie.");
     }
 
-    // Exécuter la requête SQL
-    $sql = "SELECT id_admin, nom_utilisateur, email, super_admin FROM administrateurs";
-    $resultat = $pdo->query($sql);
+    $id_admin = $_SESSION['user']['id_admin']; 
+    
+    $sql = "SELECT id_admin, nom_utilisateur, email, role
+            FROM administrateurs 
+            WHERE id_admin = :id_admin";
+    $resultat = $pdo->prepare($sql); // Utilisation de prepare()
+    
+    $resultat->execute(["id_admin" => $id_admin]);
 
-    if ($resultat->rowCount() > 0) {
-        while ($reservations = $resultat->fetch(PDO::FETCH_ASSOC)) {
-            echo "  <tr>
-                    <th>" . htmlspecialchars($reservations["id_admin"]) . "</th>
-                    </tr>
-
-                    <tr>
-                    <th>" . htmlspecialchars($reservations["nom_utilisateur"]) . "</th>
-                    </tr>
-
-                    <tr>
-                    <th>" . htmlspecialchars($reservations["email"]) . "</th>
-                    </tr>
-
-                    <tr>
-                    <th>" . htmlspecialchars($reservations["super_admin"]) . "</th>
-                  </tr>";
+        if ($resultat->rowCount() > 0) {
+            while ($admin = $resultat->fetch(PDO::FETCH_ASSOC)) {
+                echo "<tr><td class='modal-td'>Nom :</td><td>" . htmlspecialchars($admin["nom_utilisateur"]) . "</td></tr>";
+                echo "<tr><td class='modal-td'>Email :</td><td>" . htmlspecialchars($admin["email"]) . "</td></tr>";
+                echo "<tr><td class='modal-td'>Role :</td><td>" . htmlspecialchars($admin["role"]) . "</td></tr>";
+                echo "<tr><td colspan='2' class='modal-td'><a href='ajouter_admin.php'>Ajouter admin</a></td></tr>";
+                echo "<tr><td colspan='2'class='modal-td'><a href='../action/deconnexion.php'>Déconnexion</a></td></tr>";
+                echo "<tr><td colspan='2'><hr></td></tr>"; // Ligne de séparation
+            }
+        } else {
+            echo "<tr><td colspan='2'>Aucun admin trouvé.</td></tr>";
         }
-    } else {
-        echo "<tr><td colspan='4'>Aucun admin trouvé.</td></tr>";
+    } catch (Exception $e) {
+        echo "<tr><td colspan='2'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
     }
-} catch (Exception $e) {
-    echo "<tr><td colspan='4'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
-}
-?>
+    ?>
 </table>
-     <a href="../php/deconnexion"><img src="../img/exit-regular-240.png" alt="Deconnexion" width="20px" class="deco">Déconnexion</a>
-            </div>
+           </div>
         </div>
 
         <script>
@@ -106,7 +166,7 @@ try {
             <div class="form-box">
               <!-- Contenu de la liste des réservations -->
               <table border="1" style="width: 100%;">
-                <tr>
+                <tr style="background: #fe5b3d; color: white;">
                   <th>id_reservation</th>
                   <th>Id_Client</th>
                   <th>Id_Voiture</th>
@@ -119,10 +179,10 @@ try {
                 <?php
             try {
                 $sql = "SELECT * FROM reservations";
-                $stmt = $pdo->query($sql);
+                $result = $pdo->query($sql);
 
-                if ($stmt->rowCount() > 0) {
-                    while ($reservation = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if ($result->rowCount() > 0) {
+                    while ($reservation = $result->fetch(PDO::FETCH_ASSOC)) {
                         echo "<tr>
                                 <td>" . htmlspecialchars($reservation["id_reservation"]) . "</td>
                                 <td>" . htmlspecialchars($reservation["id_client"]) . "</td>

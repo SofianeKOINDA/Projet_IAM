@@ -1,7 +1,10 @@
 <?php
 session_start();
-
-require "connexion.php";
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+require "../action/connexion.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_client = $_SESSION['user']['id_client'];
@@ -46,105 +49,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Location de voitures</title>
     <link rel="stylesheet" href="../css/stylesheet.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="../css/concession.css">
     <style>
-        :root {
-            --primary: #fe5b3d;
-            --secondary: #FFAC38;
-            --third-color: #474fa0;
-            --text: #333;
-            --background: #f5f5f5;
-            --border: #ddd;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            color: var(--text);
-        }
-
-        .close-modal {
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #666;
-            transition: color 0.2s;
-        }
-
-        .close-modal:hover {
-            color: var(--primary);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .btn {
-            background: var(--third-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            transition: background 0.2s;
-        }
-
-        .btn:hover {
-            background: var(--primary);
-        }
-
-        .success {
-            color: #28a745;
-            margin-bottom: 1rem;
-        }
-
-        .error {
-            color: #dc3545;
-            margin-bottom: 1rem;
-        }
+        
     </style>
 </head>
 <body>
@@ -169,22 +76,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div class="services-container">
-            <?php
-            $sql = "SELECT id_voiture, marque, modele, image, prix_jour FROM voitures";
-            $stmt = $pdo->query($sql);
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                echo '
-                <div class="box">
-                    <div class="box-img">
-                        <img src="../img/'.$row['image'].'" alt="'.$row['marque'].' '.$row['modele'].'">
-                    </div>
-                    <h3>'.$row['marque'].' '.$row['modele'].'</h3>
-                    <p>Disponible</p>
-                    <h2>' .(isset($row['prix_jour']) ? $row['prix_jour'] : 'N/A').' <span>/jour</span></h2>
-                    <button class="btn" onclick="openModal('.$row['id_voiture'].')">louer maintenant</button>
-                </div>';
-            }
-            ?>
+        <?php
+$sql = "SELECT v.id_voiture, v.marque, v.modele, i.chemin_image, v.prix_jour 
+        FROM voitures v 
+        LEFT JOIN images i ON v.id_voiture = i.voiture_id";
+$stmt = $pdo->query($sql);
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo '
+    <div class="box">
+        <div class="box-img">
+            <img src="../image/'.$row['chemin_image'].'" alt="'.$row['marque'].' '.$row['modele'].'">
+        </div>
+        <h3>'.$row['marque'].' '.$row['modele'].'</h3>
+        <p>Disponible</p>
+        <h2>' . (isset($row['prix_jour']) ? $row['prix_jour'] : 'N/A') . ' <span>/jour</span></h2>
+        <button class="btn" onclick="openModal('.$row['id_voiture'].')">louer maintenant</button>
+    </div>';
+}
+?>
+
         </div>
 
         <!-- Modale de réservation -->
@@ -206,6 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="date_fin">Date de fin :</label>
                         <input type="date" name="date_fin" id="date_fin" required>
                     </div>
+
                     <button type="submit" class="btn">Réserver</button>
                 </form>
             </div>
@@ -215,14 +126,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script>
         // Fonctions pour gérer la modale
         function openModal(carId) {
-            document.getElementById('selectedCar').value = carId;
-            document.getElementById('reservationModal').style.display = 'flex';
-        }
+    document.getElementById('selectedCar').value = carId;
+    const modal = document.getElementById('reservationModal');
+    modal.classList.add('show');
+    modal.style.display = 'flex';
+}
 
-        function closeModal() {
-            document.getElementById('reservationModal').style.display = 'none';
-        }
-
+function closeModal() {
+    const modal = document.getElementById('reservationModal');
+    modal.classList.remove('show');
+    setTimeout(() => modal.style.display = 'none', 300); // Fermer après l'animation
+}
         // Fermer la modale si on clique en dehors
         window.onclick = function(event) {
             var modal = document.getElementById('reservationModal');
@@ -230,6 +144,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 closeModal();
             }
         }
+        document.querySelector('form').onsubmit = function(event) {
+    const dateDebut = new Date(document.getElementById('date_debut').value);
+    const dateFin = new Date(document.getElementById('date_fin').value);
+    if (dateDebut >= dateFin) {
+        alert("La date de fin ne doit pas être avant la date de début.");
+        event.preventDefault();
+    }
+};
+
     </script>
 </body>
 </html>

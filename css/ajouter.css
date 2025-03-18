@@ -19,8 +19,6 @@
     margin: 20px 0; /* Margin around the box */
     width: 100%; /* Full width */
 }
-
-
 :root{
     --primary-color: #fe5b3d;
     --secondary-color: #fFAC38;
@@ -85,48 +83,13 @@ header{
     margin-left: -25%;
    
 }
-/* Centrer la table */
-.liste-content-2 {
-    display: flex;
-    justify-content: center;
-}
-
-/* ici on va disposer les deux actions accept et decline sur la même ligne */
-form {
-    display: inline; 
-    margin: 0 5px; 
-    width: 25px; 
-}
-
-/* on a centré le titre */
-.liste-titre-2 {
-    text-align: center;
-}
-
-/* on a mis les deux actions dans un box  */
-.form-box {
-    background-color: #ffffff; 
-    padding: 10px; 
-    border-radius: 5px; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
-    margin: 20px; 
-}
-.form-box {
-    background: #ffffff; /* White background for the box */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-    padding: 20px; /* Padding inside the box */
-    margin: 20px 0; /* Margin around the box */
-    width: 100%; /* Full width */
-}
-
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Changed to center */
+    justify-content: center; 
     align-items: center;
-    margin: 50px auto; /* Adjusted margin for better centering */
-    max-width: 600px; /* Added max-width for better readability */
+    margin: 50px auto; 
+    max-width: 600px; 
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -146,7 +109,6 @@ form {
     flex-direction: column;
     width: 100%;
 }
-
 .container input[type="text"],
 .container input[type="number"] {
     padding: 10px;
@@ -157,19 +119,17 @@ form {
 }
 
 .container button {
-    padding: 12px 24px; /* Increased padding */
-    background-color: #474fa0; /* New background color */
+    padding: 12px 24px; 
+    background-color: #474fa0; 
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s, box-shadow 0.3s; /* Added transition */
+    transition: background-color 0.3s, box-shadow 0.3s; 
 }
 
 .container button:hover {
-    background-color: var(--primary-color); /* Darker shade on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added box shadow */
+    background-color: var(--primary-color); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
-
-

@@ -1,5 +1,5 @@
 <?php
-require_once 'connexion.php';
+require_once '../action/connexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_reservation'])) {
     $id_reservation = $_POST['id_reservation'];

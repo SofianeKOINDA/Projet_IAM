@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "connexion.php";
+require_once '../action/connexion.php';
 
 $id_client = isset($_SESSION['user']['id_client']) ? $_SESSION['user']['id_client'] : null;
 
@@ -34,16 +34,93 @@ $paiements = $mon_paiements->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Mon Compte</title>
-    <link rel="stylesheet" href="../css/client.css">
+    <link rel="stylesheet" href="../css/client1.css">
+    <style>
+   /* Style pour le modal */
+.modal {
+    display: none; /* Masqué par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; /* Prend toute la hauteur de la page */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+}
+
+/* Contenu du modal (aligné à droite et pleine hauteur) */
+.modal-content {
+    background-color: #fefefe;
+    position: absolute; /* Position fixe pour ancrer à droite */
+    right: 0; /* Aligner à droite */
+    top: 0;
+    height: 100%; /* Prend toute la hauteur */
+    padding: 20px;
+    border-radius: 8px 0 0 8px; /* Bord arrondi à gauche pour un effet esthétique */
+    width: 30%; /* Ajustez la largeur si nécessaire */
+    max-width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Contenu aligné à gauche dans le modal */
+}
+
+/* Bouton de fermeture */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* Table dans le modal */
+.modal-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.modal-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.modal-td {
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-table a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.modal-table a:hover {
+    text-decoration: underline;
+}
+
+/* Ligne de séparation */
+.modal-table hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+</style>
 </head>
 <body>
 <header>
         <a href="#" class="logo"><img src="../img/jeep.png" alt="Logo"></a>
         <span class="logo-text">Hallo Car</span>
         <ul class="navbar">
-            <li><a href="../php/gestion_reservation.php">Réservation</li>
-            <li><a href="../php/gestion_client.php">Client</a></li>
-            <li><a href="../php/ajouter_voiture.php">Voiture</a></li>
+            <li><a href="../php/client_compte.php">Accueil</a></li>
+            <li><a href="../php/Concession.php">Concession</a></li>
+            <li><a href="../php/service_client.php">Service client</a></li>
         </ul>
         <div class="header-btn">
         <a href="#" class="Profil" id="profile-link"><img src="../img/user-regular-240.png" alt="" width="25px" ></a>
@@ -52,61 +129,41 @@ $paiements = $mon_paiements->fetchAll(PDO::FETCH_ASSOC);
             <div class="modal-content">
                 <span id="close-modal" class="close">&times;</span>
                 <h2>Profil</h2>
-                <table>
-    <tr>
-        <td>ID_Admin</td>
-    </tr>
-    <tr>
-        <td>Nom d'utilisateur</td>
-    </tr>
-    <tr>
-        <td>Email</td>
-    </tr>
-    <tr>
-        <td>Super_Admin</td>
-    </tr>
-<?php
+                <table class="modal-table">
+                <?php
 try {
-    // Vérifier que la connexion PDO est bien initialisée
     if (!isset($pdo)) {
         throw new Exception("Erreur : La connexion PDO n'a pas été établie.");
     }
 
-    // Exécuter la requête SQL
-    $sql = "SELECT id_client, nom, prenom, email, adresse, date_naissance, numero_permis FROM clients";
-    $resultat = $pdo->query($sql);
+    $id_client = $_SESSION['user']['id_client']; 
+    
+    $sql = "SELECT id_client, nom, prenom, email, numero_permis 
+            FROM clients 
+            WHERE id_client = :id_client";
+    $stmt = $pdo->prepare($sql); // Utilisation de prepare()
+    
+    $stmt->execute(["id_client" => $id_client]);
 
-    if ($resultat->rowCount() > 0) {
-        while ($mon_profile = $resultat->fetch(PDO::FETCH_ASSOC)) {
-            echo "  <tr>
-                    <th>" . htmlspecialchars($mon_profile["id_client"]) . "</th>
-                    </tr>
-
-                    <tr>
-                    <th>" . htmlspecialchars($mon_profile["nom"]) . "</th>
-                    </tr>
-
-                    <tr>
-                    <th>" . htmlspecialchars($mon_profile["prenom"]) . "</th>
-                    </tr>
-
-                    <tr>
-                    <th>" . htmlspecialchars($mon_profile["email"]) . "</th>
-                    </tr>
-                    <tr>
-                    <th>" . htmlspecialchars($mon_profile["adresse"]) . "</th>
-                  </tr>";
+    if ($stmt->rowCount() > 0) {
+        while ($client = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo "<tr><td class='modal-td'>Nom :</td><td>" . htmlspecialchars($client["nom"]) . "</td></tr>";
+            echo "<tr><td class='modal-td'>Prénom :</td><td>" . htmlspecialchars($client["prenom"]) . "</td></tr>";
+            echo "<tr><td class='modal-td'>Email :</td><td>" . htmlspecialchars($client["email"]) . "</td></tr>";
+            echo "<tr><td class='modal-td'>Permis :</td><td>" . htmlspecialchars($client["numero_permis"]) . "</td></tr>";
+            echo "<tr><td colspan='2' class='modal-td'><a href='../action/deconnexion.php'>Déconnexion</a></td></tr>";
+            echo "<tr><td colspan='2'><hr></td></tr>"; // Ligne de séparation
         }
     } else {
-        echo "<tr><td colspan='4'>Aucun client trouvé.</td></tr>";
+        echo "<tr><td colspan='2'>Aucun client trouvé.</td></tr>";
     }
 } catch (Exception $e) {
-    echo "<tr><td colspan='4'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
+    echo "<tr><td colspan='2'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
 }
 ?>
+
 </table>
-     <a href="../php/deconnexion"><img src="../img/exit-regular-240.png" alt="Deconnexion" width="20px" class="deco">Déconnexion</a>
-            </div>
+           </div>
         </div>
 
         <script>
@@ -131,6 +188,8 @@ try {
 
         </div>
 </header>
+
+    <main class="dashboard-admin">
     <h2>Mes Réservations</h2>
     <table border="1">
         <tr>
@@ -139,20 +198,32 @@ try {
             <th>Date Début</th>
             <th>Date Fin</th>
             <th>Statut</th>
+            <th>Paiement</th>
         </tr>
-        <?php if ($reservations): ?>
-            <?php foreach ($reservations as $res): ?>
-            <tr>
-                <td><?= htmlspecialchars($res['id_reservation']) ?></td>
-                <td><?= htmlspecialchars($res['marque'] . " " . $res['modele']) ?></td>
-                <td><?= htmlspecialchars($res['date_debut']) ?></td>
-                <td><?= htmlspecialchars($res['date_fin']) ?></td>
-                <td><?= htmlspecialchars($res['statut_reservation'])?></td>
-            </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr><td colspan="5">Aucune réservation trouvée.</td></tr>
-        <?php endif; ?>
+        <?php if ($reservations) { ?>
+    <?php foreach ($reservations as $res) { ?>
+        <tr>
+            <td><?= htmlspecialchars($res['id_reservation']) ?></td>
+            <td><?= htmlspecialchars($res['marque'] . " " . $res['modele']) ?></td>
+            <td><?= htmlspecialchars($res['date_debut']) ?></td>
+            <td><?= htmlspecialchars($res['date_fin']) ?></td>
+            <td><?= htmlspecialchars($res['statut_reservation']) ?></td>
+            <td>
+                <?php if ($res['statut_reservation'] == 'confirmée') { ?>
+                    <form action="paiement.php" method="GET" style="display:inline;">
+                        <input type="hidden" name="id_reservation" value="<?= htmlspecialchars($res['id_reservation']) ?>">
+                        <button type="submit" class="btn">Payer</button>
+                    </form>
+                <?php } else { ?>
+                    <span>Non disponible</span>
+                <?php } ?>
+            </td>
+        </tr>
+    <?php } ?>
+<?php } else { ?>
+    <tr><td colspan="6">Aucune réservation trouvée.</td></tr>
+<?php } ?>
+
     </table>
 
     <h2>Mes Paiements</h2>
@@ -178,7 +249,6 @@ try {
             <tr><td colspan="5">Aucun paiement trouvé.</td></tr>
         <?php endif; ?>
     </table>
-
-    <a href="deconnexion.php">Déconnexion</a> | <a href="Concession.php">Concession</a>
+</main>
 </body>
 </html>
