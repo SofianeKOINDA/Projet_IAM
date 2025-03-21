@@ -47,6 +47,12 @@ header{
 .logo img{
     width: 40px;
 }
+.logo-text {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-left: -500px;
+}
 .navbar{
     display: flex;
     align-items: center;

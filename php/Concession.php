@@ -6,9 +6,18 @@ if (!isset($_SESSION['user'])) {
 }
 require "../action/connexion.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id_client = $_SESSION['user']['id_client'];
+$prix_jour;
+
+if (isset($_POST["id_voiture"])) {
     $id_voiture = $_POST["id_voiture"];
+    $sql = "SELECT prix_jour FROM voitures WHERE id_voiture = :id_voiture";
+    $resultat = $pdo->prepare($sql);
+    $resultat->execute(["id_voiture" => $id_voiture]);
+    $prix_jour = $resultat->fetchColumn();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['date_debut'], $_POST['date_fin'])) {
+    $id_client = $_SESSION['user']['id_client'];
     $date_debut = $_POST["date_debut"];
     $date_fin = $_POST["date_fin"];
 
@@ -16,23 +25,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             WHERE id_voiture = :id_voiture 
             AND statut_reservation = 'confirmée' 
             AND (date_debut <= :date_fin AND date_fin >= :date_debut)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
+    $resultat = $pdo->prepare($sql);
+    $resultat->execute([
         "id_voiture" => $id_voiture,
         "date_debut" => $date_debut,
         "date_fin" => $date_fin
     ]);
-    $disponible = $stmt->fetchColumn() == 0;
+    $disponible = $resultat->fetchColumn() == 0;
 
     if ($disponible) {
-        $sql = "INSERT INTO reservations (id_client, id_voiture, date_debut, date_fin, statut_reservation) 
-                VALUES (:id_client, :id_voiture, :date_debut, :date_fin, 'en attente')";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
+        $sql = "INSERT INTO reservations (id_client, id_voiture, date_debut, date_fin, montant, statut_reservation) 
+                VALUES (:id_client, :id_voiture, :date_debut, :date_fin, :montant, 'en attente')";
+        $resultat = $pdo->prepare($sql);
+        $resultat->execute([
             "id_client" => $id_client,
             "id_voiture" => $id_voiture,
             "date_debut" => $date_debut,
-            "date_fin" => $date_fin
+            "date_fin" => $date_fin,
+            "montant" => $montant = $prix_jour * (strtotime($date_fin) - strtotime($date_debut)) / (60 * 60 * 24)
         ]);
         $success = "Réservation enregistrée avec succès !";
     } else {
@@ -51,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="../css/concession.css">
     <style>
-        
+        /* Styles supplémentaires si nécessaire */
     </style>
 </head>
 <body>
@@ -61,12 +71,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <ul class="navbar">
             <li><a href="../php/client_compte.php">Accueil</a></li>
             <li><a href="../php/Concession.php">Concession</a></li>
-            <li><a href="../php/service_client.php">Service client</a></li>
+            <li><a href="../php/Service_Client.php">Service client</a></li>
+            <li><a href="../action/deconnexion.php">Deconnexion</a></li>
         </ul>
-        <div class="header-btn">
-            <a href="../php/profilClient" class="profil"><img src="../img/user-regular-240.png" alt="" width="25px"></a>
-        </div>
-        
     </header>
 
     <section class="service" id="services">
@@ -77,24 +84,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="services-container">
         <?php
-$sql = "SELECT v.id_voiture, v.marque, v.modele, i.chemin_image, v.prix_jour 
-        FROM voitures v 
-        LEFT JOIN images i ON v.id_voiture = i.voiture_id";
-$stmt = $pdo->query($sql);
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    echo '
-    <div class="box">
-        <div class="box-img">
-            <img src="../image/'.$row['chemin_image'].'" alt="'.$row['marque'].' '.$row['modele'].'">
-        </div>
-        <h3>'.$row['marque'].' '.$row['modele'].'</h3>
-        <p>Disponible</p>
-        <h2>' . (isset($row['prix_jour']) ? $row['prix_jour'] : 'N/A') . ' <span>/jour</span></h2>
-        <button class="btn" onclick="openModal('.$row['id_voiture'].')">louer maintenant</button>
-    </div>';
-}
-?>
-
+            $sql = "SELECT v.id_voiture, v.marque, v.modele, i.chemin_image, v.prix_jour 
+                    FROM voitures v 
+                    LEFT JOIN images i ON v.id_voiture = i.voiture_id";
+            $resultat = $pdo->query($sql);
+            while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
+                echo '
+                <div class="box">
+                    <div class="box-img">
+                        <img src="../image/'.$row['chemin_image'].'" alt="'.$row['marque'].' '.$row['modele'].'">
+                    </div>
+                    <h3>'.$row['marque'].' '.$row['modele'].'</h3>
+                    <p>Disponible</p>
+                    <h2>' . (isset($row['prix_jour']) ? $row['prix_jour'] : 'N/A') . ' <span>/jour</span></h2>
+                    <button class="btn" onclick="openModal('.$row['id_voiture'].', '.$row['prix_jour'].')">Louer maintenant</button>
+                </div>';
+            }
+        ?>
         </div>
 
         <!-- Modale de réservation -->
@@ -116,6 +122,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         <label for="date_fin">Date de fin :</label>
                         <input type="date" name="date_fin" id="date_fin" required>
                     </div>
+                    <div class="form-group">
+                        <label for="prixTotal">Prix Total :</label>
+                        <input type="text" id="prixTotal" readonly>
+                    </div>
 
                     <button type="submit" class="btn">Réserver</button>
                 </form>
@@ -125,34 +135,48 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
     <script>
         // Fonctions pour gérer la modale
-        function openModal(carId) {
-    document.getElementById('selectedCar').value = carId;
-    const modal = document.getElementById('reservationModal');
-    modal.classList.add('show');
-    modal.style.display = 'flex';
-}
+        function openModal(carId, prixJour) {
+            document.getElementById('selectedCar').value = carId;
+            document.getElementById('prixTotal').value = ""; // Réinitialiser le prix total
+            const modal = document.getElementById('reservationModal');
+            modal.classList.add('show');
+            modal.style.display = 'flex';
 
-function closeModal() {
-    const modal = document.getElementById('reservationModal');
-    modal.classList.remove('show');
-    setTimeout(() => modal.style.display = 'none', 300); // Fermer après l'animation
-}
-        // Fermer la modale si on clique en dehors
-        window.onclick = function(event) {
-            var modal = document.getElementById('reservationModal');
-            if (event.target == modal) {
-                closeModal();
+            // Attach event listeners
+            document.getElementById('date_debut').addEventListener('change', () => calculerPrix(prixJour));
+            document.getElementById('date_fin').addEventListener('change', () => calculerPrix(prixJour));
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('reservationModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        // Calculer le prix total
+        function calculerPrix(prixJour) {
+            const dateDebut = new Date(document.getElementById('date_debut').value);
+            const dateFin = new Date(document.getElementById('date_fin').value);
+
+            if (!isNaN(dateDebut) && !isNaN(dateFin) && dateDebut < dateFin) {
+                const differenceEnMillisecondes = dateFin - dateDebut;
+                const jours = differenceEnMillisecondes / (1000 * 60 * 60 * 24);
+                const prixTotal = jours * prixJour;
+                document.getElementById("prixTotal").value = prixTotal + " Fcfa";
+            } else {
+                document.getElementById("prixTotal").value = "Erreur: Dates invalides";
             }
         }
-        document.querySelector('form').onsubmit = function(event) {
-    const dateDebut = new Date(document.getElementById('date_debut').value);
-    const dateFin = new Date(document.getElementById('date_fin').value);
-    if (dateDebut >= dateFin) {
-        alert("La date de fin ne doit pas être avant la date de début.");
-        event.preventDefault();
-    }
-};
 
+        // Validation des dates avant la soumission du formulaire
+        document.querySelector('form').onsubmit = function(event) {
+            const dateDebut = new Date(document.getElementById('date_debut').value);
+            const dateFin = new Date(document.getElementById('date_fin').value);
+            if (dateDebut >= dateFin) {
+                alert("La date de fin ne doit pas être avant la date de début.");
+                event.preventDefault();
+            }
+        };
     </script>
 </body>
 </html>

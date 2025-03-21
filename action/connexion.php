@@ -1,9 +1,9 @@
 <?php
 
-$host = 'localhost'; // Adresse du serveur MySQL
-$dbname = 'gestion_comptes'; // Nom de la base de données
-$username = 'root'; 
-$password = ''; 
+$host = 'mysql-kia.alwaysdata.net'; // Adresse du serveur MySQL
+$dbname = 'kia_gestion_comptes'; // Nom de la base de données
+$username = 'kia'; 
+$password = 'LALLA1234'; 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

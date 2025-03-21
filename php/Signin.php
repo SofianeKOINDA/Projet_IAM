@@ -15,10 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $sql = "INSERT INTO clients (nom, prenom, email, mot_de_passe, date_naissance, adresse, numero_permis) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $query = $connect->prepare($sql);
+    $query = $pdo->prepare($sql);
 
     if ($query->execute([$nom, $prenom, $email, $mot_de_passe, $date_naissance, $adresse, $permis_conduire])) {
-        $_SESSION['user'] = $email;
+        $id_client = $pdo->lastInsertId(); // Récupérer l'ID du client ajouté
+        $_SESSION['user'] = [
+        'id_client' => $id_client,
+        'email' => $email
+    ];
         $_SESSION['user_type'] = 'client';
         header("Location: client_compte.php");
         exit();

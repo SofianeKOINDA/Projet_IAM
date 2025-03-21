@@ -7,7 +7,7 @@ require "../action/connexion.php";
 <head>
     <meta charset="UTF-8">
     <title>Se Connecter</title>
-    <link rel="stylesheet" href="../css/client.css">
+    <link rel="stylesheet" href="../css/Client.css">
 </head>
 <body>
 <header>
@@ -16,7 +16,7 @@ require "../action/connexion.php";
     <ul class="navbar">
         <li><a href="../php/client_compte.php">Accueil</a></li>
         <li><a href="../php/Concession.php">Concession</a></li>
-        <li><a href="../php/service_client.php">Service client</a></li>
+        <li><a href="../php/Service_Client.php">Service client</a></li>
     </ul>
     <div class="header-btn">
         <a href="#" class="Profil" id="profile-link"><img src="../img/user-regular-240.png" alt="" width="25px" ></a>
@@ -45,7 +45,7 @@ try {
             echo "<tr><td class='modal-td'>Prénom :</td><td>" . htmlspecialchars($client["prenom"]) . "</td></tr>";
             echo "<tr><td class='modal-td'>Email :</td><td>" . htmlspecialchars($client["email"]) . "</td></tr>";
             echo "<tr><td class='modal-td'>Permis :</td><td>" . htmlspecialchars($client["numero_permis"]) . "</td></tr>";
-            echo "<tr><td colspan='2' class='modal-td<a href='deconnexion.php'>Déconnexion</a></td></tr>";
+            echo "<tr><td colspan='2' class='modal-td<a href='../action/deconnexion.php'>Déconnexion</a></td></tr>";
             echo "<tr><td colspan='2'><hr></td></tr>";
         }
     } else {
